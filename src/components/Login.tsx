@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
+import { H1 } from "baseui/typography";
 
 export const authEndpoint = "https://accounts.spotify.com/authorize";
 
@@ -37,6 +38,9 @@ const Login = () => {
 
   return (
     <div>
+      <header>
+        <H1>Melody</H1>
+      </header>
       {!token && (
         <a
           className="btn btn--loginApp-link"
