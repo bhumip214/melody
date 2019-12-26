@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Redirect } from "react-router-dom";
 
 export const authEndpoint = "https://accounts.spotify.com/authorize";
 
@@ -17,14 +18,19 @@ const hash = window.location.hash
     }
     return initial;
   }, {} as Record<string, string>);
+
 window.location.hash = "";
 
 const Login = () => {
-  const [token, setToken] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(
+    localStorage.getItem("token")
+  );
 
   useEffect(() => {
     let _token = hash.access_token;
+
     if (_token) {
+      window.localStorage.setItem("token", hash.access_token);
       setToken(_token);
     }
   }, []);
@@ -41,7 +47,7 @@ const Login = () => {
           Login to Spotify
         </a>
       )}
-      {token && <div> Dashboard </div>}
+      {token && <Redirect to="/dashboard" />}
     </div>
   );
 };
