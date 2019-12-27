@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { H1 } from "baseui/typography";
+import { styled } from "baseui";
+
+const Centered = styled("div", {
+  textAlign: "center",
+  paddingLeft: "20px"
+});
 
 export const authEndpoint = "https://accounts.spotify.com/authorize";
 
@@ -37,7 +43,7 @@ const Login = () => {
   }, []);
 
   return (
-    <div>
+    <Centered>
       <header>
         <H1>Melody</H1>
       </header>
@@ -52,7 +58,7 @@ const Login = () => {
         </a>
       )}
       {token && <Redirect to="/dashboard" />}
-    </div>
+    </Centered>
   );
 };
 

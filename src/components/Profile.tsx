@@ -25,9 +25,13 @@ const Profile = () => {
   useEffect(() => {
     Axios.get("https://api.spotify.com/v1/me", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    }).then(res => {
-      setUserInfo(res.data);
-    });
+    })
+      .then(res => {
+        setUserInfo(res.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }, []);
 
   return (
