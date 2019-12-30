@@ -1,0 +1,13 @@
+.trackListItem .feather-music {
+  display: initial;
+}
+.trackListItem:hover .feather-music {
+  display: none;
+}
+
+.trackListItem .feather-play {
+  display: none;
+}
+.trackListItem:hover .feather-play {
+  display: initial;
+}
