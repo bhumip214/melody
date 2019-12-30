@@ -5,10 +5,8 @@ import { H4 } from "baseui/typography";
 
 const LeftAligned = styled("div", {
   textAlign: "left",
-  width: "240px",
-  height: "100vh",
-  borderRight: "1px solid grey",
-  overflow: "hidden"
+  width: "100%",
+  borderRight: "1px solid grey"
 });
 
 const NavItem = styled("div", {

@@ -3,6 +3,8 @@ import "./App.css";
 import Login from "./components/Login";
 import SideNavBar from "./components/SideNavBar";
 import Dashboard from "./components/Dashboard";
+import Album from "./components/Album";
+import Player from "./components/Player";
 import { Route, Switch } from "react-router-dom";
 import { Client as Styletron } from "styletron-engine-atomic";
 import { Provider as StyletronProvider } from "styletron-react";
@@ -15,13 +17,25 @@ const engine = new Styletron();
 
 const MainContainer = styled("div", {
   display: "flex",
-  justifyContent: "space-between"
+  flexDirection: "column",
+  height: "100vh"
+});
+
+const TopContainer = styled("div", {
+  display: "flex",
+  justifyContent: "space-between",
+  overflow: "hidden"
+});
+
+const SideNavBarContainer = styled("div", {
+  overflow: "scroll",
+  width: "240px"
 });
 
 const RightContainer = styled("div", {
   marginleft: "255px",
-  width: "100%",
-  backgroundColor: ""
+  overflow: "scroll",
+  width: "100%"
 });
 
 const App = () => {
@@ -32,12 +46,19 @@ const App = () => {
           <Route exact path="/" component={Login} />
           <Route>
             <MainContainer>
-              <SideNavBar />
-              <RightContainer>
-                <Switch>
-                  <Route path="/dashboard" component={Dashboard} />
-                </Switch>
-              </RightContainer>
+              <TopContainer>
+                <SideNavBarContainer>
+                  <SideNavBar />
+                </SideNavBarContainer>
+
+                <RightContainer>
+                  <Switch>
+                    <Route path="/dashboard/albums/:id" component={Album} />
+                    <Route path="/dashboard" component={Dashboard} />
+                  </Switch>
+                </RightContainer>
+              </TopContainer>
+              <Player />
             </MainContainer>
           </Route>
         </Switch>
