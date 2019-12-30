@@ -6,6 +6,7 @@ import { H4 } from "baseui/typography";
 const LeftAligned = styled("div", {
   textAlign: "left",
   width: "100%",
+  height: "100%",
   borderRight: "1px solid grey"
 });
 

@@ -96,14 +96,14 @@ const Home = () => {
             featuredList.items.map(item => {
               return (
                 <Li key={item.id}>
-                  <a href={item.href}>
+                  <Link to={`/dashboard/playlists/${item.id}`}>
                     <img
                       height="200"
                       width="200"
                       src={item.images[0].url}
                       alt={item.name}
                     />
-                  </a>
+                  </Link>
                 </Li>
               );
             })}

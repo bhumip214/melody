@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Item } from "./api";
-import { styled, useStyletron } from "baseui";
+import { AlbumItem, PlaylistItem } from "./api";
+import { useStyletron } from "baseui";
 import { ListItem, ListItemLabel } from "baseui/list";
 
-// const List = styled("div", {
-//   marginBottom: "5px"
-// });
-
 interface TrackProps {
-  track: Item;
+  name: string;
+  preview_url: string | null;
+  artists: Array<{ name?: string }>;
+  duration_ms: number;
 }
+
 const Track = (props: TrackProps) => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [css, theme] = useStyletron();
-
-  const track = props.track;
 
   // below code ignores an error of ListFormat since not all bowser supports it
   // @ts-ignore
@@ -24,7 +22,7 @@ const Track = (props: TrackProps) => {
     type: "conjunction"
   });
 
-  const artists = track.artists.map(artist => {
+  const artists = props.artists.map(artist => {
     return artist.name;
   });
 
@@ -35,7 +33,6 @@ const Track = (props: TrackProps) => {
   };
 
   useEffect(() => {
-    console.log(isPlaying, track, track.preview_url);
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.play();
@@ -43,7 +40,7 @@ const Track = (props: TrackProps) => {
         audioRef.current.pause();
       }
     }
-  }, [isPlaying, track]);
+  }, [isPlaying, props.preview_url]);
 
   return (
     <ListItem
@@ -51,9 +48,9 @@ const Track = (props: TrackProps) => {
       overrides={{
         Root: {
           props: {
-            className: track.preview_url ? "trackListItem" : null,
+            className: props.preview_url ? "trackListItem" : null,
             onDoubleClick: () => {
-              if (track.preview_url !== null) {
+              if (props.preview_url !== null) {
                 setIsPlaying(!isPlaying);
               }
             }
@@ -113,7 +110,7 @@ const Track = (props: TrackProps) => {
                 <circle cx="6" cy="18" r="3"></circle>
                 <circle cx="18" cy="16" r="3"></circle>
               </svg>
-              {track.preview_url && (
+              {props.preview_url && (
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -133,17 +130,17 @@ const Track = (props: TrackProps) => {
           )}
         </>
       )}
-      endEnhancer={() => convertMstoMinsSec(track.duration_ms)}
+      endEnhancer={() => convertMstoMinsSec(props.duration_ms)}
     >
       <ListItemLabel description={formatter.format(artists)}>
         <span
           className={css({ color: isPlaying ? theme.colors.positive : "" })}
         >
-          {track.name}
+          {props.name}
         </span>
-        {track.preview_url && (
+        {props.preview_url && (
           <audio ref={audioRef}>
-            <source src={track.preview_url} />
+            <source src={props.preview_url} />
           </audio>
         )}
       </ListItemLabel>

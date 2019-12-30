@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import SideNavBar from "./components/SideNavBar";
 import Dashboard from "./components/Dashboard";
 import Album from "./components/Album";
+import Playlist from "./components/Playlist";
 import Player from "./components/Player";
 import { Route, Switch } from "react-router-dom";
 import { Client as Styletron } from "styletron-engine-atomic";
@@ -53,7 +54,15 @@ const App = () => {
 
                 <RightContainer>
                   <Switch>
-                    <Route path="/dashboard/albums/:id" component={Album} />
+                    <Route
+                      path="/dashboard/playlists/:playlistId"
+                      component={Playlist}
+                    />
+                    <Route
+                      path="/dashboard/albums/:albumId"
+                      component={Album}
+                    />
+
                     <Route path="/dashboard" component={Dashboard} />
                   </Switch>
                 </RightContainer>

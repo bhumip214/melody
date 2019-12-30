@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Track from "./Track";
-import { IAlbum, ITracks } from "./api";
+import { IAlbum, AlbumsTracks } from "./api";
 import Axios from "axios";
 import { styled } from "baseui";
 
@@ -24,17 +24,17 @@ interface AlbumProps {
 }
 const Album = (props: AlbumProps) => {
   const [album, setAlbum] = useState<IAlbum | null>(null);
-  const [tracks, setTracks] = useState<ITracks | null>(null);
+  const [tracks, setTracks] = useState<AlbumsTracks | null>(null);
 
   useEffect(() => {
-    const id = props.match.params.id;
+    const id = props.match.params.albumId;
     Axios.get(`https://api.spotify.com/v1/albums/${id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     }).then(res => {
       setAlbum(res.data);
       setTracks(res.data.tracks);
     });
-  }, [props.match.params.id]);
+  }, [props.match.params.albumId]);
 
   // @ts-ignore
   const formatter = new Intl.ListFormat("en", {
@@ -66,7 +66,15 @@ const Album = (props: AlbumProps) => {
             <Ul>
               {tracks &&
                 tracks.items.map(track => {
-                  return <Track key={track.id} track={track} />;
+                  return (
+                    <Track
+                      key={track.id}
+                      name={track.name}
+                      artists={track.artists}
+                      preview_url={track.preview_url}
+                      duration_ms={track.duration_ms}
+                    />
+                  );
                 })}
             </Ul>
             <span>{album.copyrights[0].text}</span>
