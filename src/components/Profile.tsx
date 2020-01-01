@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { UserInfo } from "./api";
-import { H6 } from "baseui/typography";
 import { styled } from "baseui";
 
 const ProfileContainer = styled("div", {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  padding: "40px",
-  width: "160px"
+  padding: "0px 20px",
+  margin: "20px 40px",
+  borderRadius: "30px",
+  backgroundColor: "#1f1f1f",
+  fontSize: "14px",
+  fontWeight: "bold"
 });
 
 const IMG = styled("img", {
@@ -21,27 +24,40 @@ const IMG = styled("img", {
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
+    setIsLoading(true);
     Axios.get("https://api.spotify.com/v1/me", {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     })
       .then(res => {
+        setIsLoading(false);
         setUserInfo(res.data);
       })
       .catch(error => {
         console.log(error);
+        setError(true);
       });
   }, []);
 
   return (
     <div style={{ display: "flex", justifyContent: "flex-end" }}>
-      {userInfo && (
-        <ProfileContainer>
-          <H6 margin={0}>{userInfo.display_name}</H6>
-          <IMG src={userInfo.images[0].url} alt="Profile" />
-        </ProfileContainer>
-      )}
+      <ProfileContainer>
+        {isLoading ? (
+          <div>Loading...</div>
+        ) : error ? (
+          <div>Something went wrong try again!</div>
+        ) : (
+          userInfo && (
+            <>
+              <p>{userInfo.display_name}</p>
+              <IMG src={userInfo.images[0].url} alt="Profile" />
+            </>
+          )
+        )}
+      </ProfileContainer>
     </div>
   );
 };

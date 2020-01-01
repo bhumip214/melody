@@ -57,7 +57,7 @@ const Login = () => {
           Login to Spotify
         </a>
       )}
-      {token && <Redirect to="/dashboard" />}
+      {token && <Redirect to="/new-releases" />}
     </Centered>
   );
 };
