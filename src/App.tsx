@@ -2,10 +2,13 @@ import React from "react";
 import "./App.css";
 import Login from "./components/Login";
 import SideNavBar from "./components/SideNavBar";
-import Dashboard from "./components/Dashboard";
 import Album from "./components/Album";
 import Playlist from "./components/Playlist";
+import Category from "./components/Category";
 import Player from "./components/Player";
+import NewReleases from "./components/NewReleases";
+import Categories from "./components/Categories";
+import FeaturedList from "./components/FeaturedList";
 import { Route, Switch } from "react-router-dom";
 import { Client as Styletron } from "styletron-engine-atomic";
 import { Provider as StyletronProvider } from "styletron-react";
@@ -25,12 +28,14 @@ const MainContainer = styled("div", {
 const TopContainer = styled("div", {
   display: "flex",
   justifyContent: "space-between",
-  overflow: "hidden"
+  overflow: "hidden",
+  height: "100%"
 });
 
 const SideNavBarContainer = styled("div", {
   overflow: "scroll",
-  width: "240px"
+  width: "240px",
+  borderRight: "1px solid grey"
 });
 
 const RightContainer = styled("div", {
@@ -54,16 +59,17 @@ const App = () => {
 
                 <RightContainer>
                   <Switch>
+                    <Route path="/playlists/:playlistId" component={Playlist} />
+                    <Route path="/albums/:albumId" component={Album} />
+
                     <Route
-                      path="/dashboard/playlists/:playlistId"
-                      component={Playlist}
-                    />
-                    <Route
-                      path="/dashboard/albums/:albumId"
-                      component={Album}
+                      path="/categories/:categoryId"
+                      component={Category}
                     />
 
-                    <Route path="/dashboard" component={Dashboard} />
+                    <Route path="/new-releases" component={NewReleases} />
+                    <Route path="/featured-list" component={FeaturedList} />
+                    <Route path="/categories" component={Categories} />
                   </Switch>
                 </RightContainer>
               </TopContainer>
