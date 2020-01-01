@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Track from "./Track";
-import { IPlaylist, PlaylistTracks } from "./api";
+import { IPlaylist } from "./api";
 import Axios from "axios";
 import { styled } from "baseui";
+import Profile from "./Profile";
 
 const PlaylistContainer = styled("div", {
   display: "flex",
-  margin: "120px"
+  margin: "10px 120px"
 });
 
 const PlaylistInfo = styled("div", {
@@ -24,7 +25,6 @@ interface PlaylistProps {
 }
 const Playlist = (props: PlaylistProps) => {
   const [playlist, setPlaylist] = useState<IPlaylist | null>(null);
-  const [tracks, setTracks] = useState<PlaylistTracks | null>(null);
 
   useEffect(() => {
     const id = props.match.params.playlistId;
@@ -33,13 +33,12 @@ const Playlist = (props: PlaylistProps) => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     }).then(res => {
       setPlaylist(res.data);
-      setTracks(res.data.tracks);
     });
   }, [props.match.params.playlistId]);
 
-  //   console.log({ pTrack: stracks });
   return (
     <>
+      <Profile />
       {playlist && (
         <PlaylistContainer>
           <PlaylistInfo>
@@ -56,9 +55,8 @@ const Playlist = (props: PlaylistProps) => {
           </PlaylistInfo>
           <div>
             <Ul>
-              {tracks &&
-                tracks.items.map(item => {
-                  console.log({ item: item.track });
+              {playlist.tracks &&
+                playlist.tracks.items.map(item => {
                   return (
                     <Track
                       key={item.track.id}

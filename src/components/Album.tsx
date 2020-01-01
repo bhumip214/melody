@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Track from "./Track";
-import { IAlbum, AlbumsTracks } from "./api";
+import { IAlbum } from "./api";
 import Axios from "axios";
 import { styled } from "baseui";
+import Profile from "./Profile";
 
 const AlbumContainer = styled("div", {
   display: "flex",
-  margin: "120px"
+  margin: "10px 120px"
 });
 
 const AlbumInfo = styled("div", {
@@ -16,7 +17,8 @@ const AlbumInfo = styled("div", {
 });
 
 const Ul = styled("ul", {
-  width: "800px"
+  width: "800px",
+  marginBottom: "40px"
 });
 
 interface AlbumProps {
@@ -24,7 +26,6 @@ interface AlbumProps {
 }
 const Album = (props: AlbumProps) => {
   const [album, setAlbum] = useState<IAlbum | null>(null);
-  const [tracks, setTracks] = useState<AlbumsTracks | null>(null);
 
   useEffect(() => {
     const id = props.match.params.albumId;
@@ -32,7 +33,6 @@ const Album = (props: AlbumProps) => {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
     }).then(res => {
       setAlbum(res.data);
-      setTracks(res.data.tracks);
     });
   }, [props.match.params.albumId]);
 
@@ -51,6 +51,7 @@ const Album = (props: AlbumProps) => {
 
   return (
     <>
+      <Profile />
       {album && (
         <AlbumContainer>
           <AlbumInfo>
@@ -61,11 +62,12 @@ const Album = (props: AlbumProps) => {
               {album.total_tracks} Tracks ·{" "}
               {new Date(album.release_date).getFullYear()}
             </p>
+            <span>{album.copyrights[0].text}</span>
           </AlbumInfo>
           <div>
             <Ul>
-              {tracks &&
-                tracks.items.map(track => {
+              {album.tracks &&
+                album.tracks.items.map(track => {
                   return (
                     <Track
                       key={track.id}
@@ -77,7 +79,6 @@ const Album = (props: AlbumProps) => {
                   );
                 })}
             </Ul>
-            <span>{album.copyrights[0].text}</span>
           </div>
         </AlbumContainer>
       )}

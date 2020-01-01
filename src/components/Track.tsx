@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { AlbumItem, PlaylistItem } from "./api";
 import { useStyletron } from "baseui";
 import { ListItem, ListItemLabel } from "baseui/list";
 
