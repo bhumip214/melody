@@ -11,7 +11,7 @@ export interface UserInfo {
 }
 
 // new Releases
-export interface NewReleases {
+export interface INewReleases {
   href: string;
   items: NewReleasesItem[];
   limit: number;
@@ -101,7 +101,7 @@ export interface AlbumItem {
 }
 
 //FeaturedList
-export interface FeaturedList {
+export interface IFeaturedList {
   href: string;
   items: FeaturedListItem[];
   limit: number;
@@ -128,14 +128,6 @@ export interface FeaturedListItem {
   uri: string;
 }
 
-export enum URI {
-  SpotifyUserSpotify = "spotify:user:spotify"
-}
-
-export enum ItemType {
-  Playlist = "playlist"
-}
-
 // Playlist
 export interface IPlaylist {
   collaborative: boolean;
@@ -153,12 +145,6 @@ export interface IPlaylist {
   tracks: PlaylistTracks;
   type: string;
   uri: string;
-}
-
-export interface Image {
-  height: number | null;
-  url: string;
-  width: number | null;
 }
 
 export interface PlaylistTracks {
@@ -231,7 +217,7 @@ export interface VideoThumbnail {
 }
 
 // Categories
-export interface Categories {
+export interface ICategories {
   href: string;
   items: CategoriesItem[];
   limit: number;
@@ -254,6 +240,39 @@ export interface Icon {
   width: number | null;
 }
 
+//Category
+export interface CategoryPlaylists {
+  href: string;
+  items: CategoryPlaylistsItem[];
+  limit: number;
+  next: null;
+  offset: number;
+  previous: null;
+  total: number;
+}
+
+export interface CategoryPlaylistsItem {
+  collaborative: boolean;
+  description: string;
+  external_urls: ExternalUrls;
+  href: string;
+  id: string;
+  images: Image[];
+  name: string;
+  owner: Owner;
+  primary_color: null;
+  public: null;
+  snapshot_id: string;
+  tracks: Tracks;
+  type: ItemType;
+  uri: string;
+}
+
+export enum ID {
+  Spotify = "spotify",
+  Spotifycharts = "spotifycharts"
+}
+
 // commonly used
 
 export interface Followers {
@@ -272,13 +291,18 @@ export interface Image {
 }
 
 export interface Owner {
-  display_name?: string;
+  display_name?: DisplayName;
   external_urls: ExternalUrls;
   href: string;
   id: string;
   type: OwnerType;
   uri: string;
   name?: string;
+}
+
+export enum DisplayName {
+  Spotify = "Spotify",
+  Spotifycharts = "spotifycharts"
 }
 
 export enum OwnerType {
@@ -310,4 +334,13 @@ export enum ReleaseDatePrecision {
 export interface Tracks {
   href: string;
   total: number;
+}
+
+export enum ItemType {
+  Playlist = "playlist"
+}
+
+export enum URI {
+  SpotifyUserSpotify = "spotify:user:spotify",
+  SpotifyUserSpotifycharts = "spotify:user:spotifycharts"
 }
