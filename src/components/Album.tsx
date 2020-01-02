@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Track from "./Track";
-import { IAlbum } from "./api";
+import { IAlbum, AlbumItem } from "./api";
 import Axios from "axios";
 import { styled } from "baseui";
-import Profile from "./Profile";
+import { Button, SIZE, SHAPE } from "baseui/button";
+import { PlayerContext } from "./Dashboard";
+import { formatter } from "../helpers/utilis";
 
 export const AlbumContainer = styled("div", {
   display: "flex",
@@ -24,10 +26,13 @@ export const Ul = styled("ul", {
 interface AlbumProps {
   match: any;
 }
+
 const Album = (props: AlbumProps) => {
   const [album, setAlbum] = useState<IAlbum | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+
+  const player = useContext(PlayerContext);
 
   useEffect(() => {
     const id = props.match.params.albumId;
@@ -46,12 +51,6 @@ const Album = (props: AlbumProps) => {
       });
   }, [props.match.params.albumId]);
 
-  // @ts-ignore
-  const formatter = new Intl.ListFormat("en", {
-    style: "short",
-    type: "conjunction"
-  });
-
   let artists;
   if (album) {
     artists = album.artists.map(artist => {
@@ -59,9 +58,18 @@ const Album = (props: AlbumProps) => {
     });
   }
 
+  const handleDoubleClick = (track: AlbumItem, album: IAlbum) => {
+    player.playTrack(track, album);
+  };
+
+  const playableTracks =
+    album &&
+    album.tracks.items.filter(item => {
+      return item.preview_url !== null;
+    });
+
   return (
     <>
-      <Profile />
       {isLoading ? (
         <AlbumContainer>Loading...</AlbumContainer>
       ) : error ? (
@@ -78,7 +86,28 @@ const Album = (props: AlbumProps) => {
                   {album.total_tracks} Tracks ·{" "}
                   {new Date(album.release_date).getFullYear()}
                 </p>
-                <span>{album.copyrights[0].text}</span>
+
+                {playableTracks &&
+                  playableTracks.length > 0 &&
+                  (player.isPlaying && player.currentAlbum.id === album.id ? (
+                    <Button
+                      onClick={() => player.setIsPlaying(false)}
+                      size={SIZE.compact}
+                      shape={SHAPE.pill}
+                    >
+                      Pause
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() =>
+                        player.addToPlayQueue(playableTracks, album)
+                      }
+                      size={SIZE.compact}
+                      shape={SHAPE.pill}
+                    >
+                      Play
+                    </Button>
+                  ))}
               </AlbumInfo>
               <div>
                 <Ul>
@@ -87,14 +116,19 @@ const Album = (props: AlbumProps) => {
                       return (
                         <Track
                           key={track.id}
+                          id={track.id}
                           name={track.name}
                           artists={track.artists}
                           preview_url={track.preview_url}
                           duration_ms={track.duration_ms}
+                          onDoubleClick={() => handleDoubleClick(track, album)}
                         />
                       );
                     })}
                 </Ul>
+                <span style={{ padding: "20px" }}>
+                  {album.copyrights[0].text}
+                </span>
               </div>
             </AlbumContainer>
           )}

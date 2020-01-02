@@ -1,45 +1,30 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useContext } from "react";
 import { useStyletron } from "baseui";
 import { ListItem, ListItemLabel } from "baseui/list";
+import { PlayerContext } from "./Dashboard";
+import { convertMstoMinsSec, formatter } from "../helpers/utilis";
 
 interface TrackProps {
   name: string;
+  id: string;
   preview_url: string | null;
   artists: Array<{ name?: string }>;
   duration_ms: number;
+  onDoubleClick: Function;
 }
 
 const Track = (props: TrackProps) => {
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [css, theme] = useStyletron();
 
-  // below code ignores an error of ListFormat since not all bowser supports it
-  // @ts-ignore
-  const formatter = new Intl.ListFormat("en", {
-    style: "short",
-    type: "conjunction"
-  });
+  const player = useContext(PlayerContext);
+
+  const isTrackPlaying = player.currentTrack
+    ? player.currentTrack.id === props.id && player.isPlaying
+    : false;
 
   const artists = props.artists.map(artist => {
     return artist.name;
   });
-
-  const convertMstoMinsSec = (ms: number) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = Number(((ms % 60000) / 1000).toFixed(0));
-    return minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
-  };
-
-  useEffect(() => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.play();
-      } else {
-        audioRef.current.pause();
-      }
-    }
-  }, [isPlaying, props.preview_url]);
 
   return (
     <ListItem
@@ -50,12 +35,12 @@ const Track = (props: TrackProps) => {
             className: props.preview_url ? "trackListItem" : null,
             onDoubleClick: () => {
               if (props.preview_url !== null) {
-                setIsPlaying(!isPlaying);
+                props.onDoubleClick();
               }
             }
           },
           style: ({ $theme }) => {
-            if (isPlaying) {
+            if (isTrackPlaying) {
               return {
                 backgroundColor: $theme.colors.listBodyFill,
                 color: $theme.colors.positive,
@@ -74,7 +59,7 @@ const Track = (props: TrackProps) => {
       }}
       artwork={() => (
         <>
-          {isPlaying ? (
+          {isTrackPlaying ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -133,15 +118,12 @@ const Track = (props: TrackProps) => {
     >
       <ListItemLabel description={formatter.format(artists)}>
         <span
-          className={css({ color: isPlaying ? theme.colors.positive : "" })}
+          className={css({
+            color: isTrackPlaying ? theme.colors.positive : ""
+          })}
         >
           {props.name}
         </span>
-        {props.preview_url && (
-          <audio ref={audioRef}>
-            <source src={props.preview_url} />
-          </audio>
-        )}
       </ListItemLabel>
     </ListItem>
   );

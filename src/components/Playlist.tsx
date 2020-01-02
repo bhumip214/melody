@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Track from "./Track";
-import { IPlaylist } from "./api";
+import { IPlaylist, PlaylistTrack } from "./api";
 import Axios from "axios";
-import Profile from "./Profile";
+import { Button, SIZE, SHAPE } from "baseui/button";
 import {
   AlbumContainer as PlaylistContainer,
   AlbumInfo as PlaylistInfo,
   Ul
 } from "./Album";
+import { PlayerContext } from "./Dashboard";
 
 interface PlaylistProps {
   match: any;
@@ -16,6 +17,8 @@ const Playlist = (props: PlaylistProps) => {
   const [playlist, setPlaylist] = useState<IPlaylist | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+
+  const player = useContext(PlayerContext);
 
   useEffect(() => {
     const id = props.match.params.playlistId;
@@ -34,9 +37,22 @@ const Playlist = (props: PlaylistProps) => {
       });
   }, [props.match.params.playlistId]);
 
+  const handleDoubleClick = (track: PlaylistTrack, playlist: IPlaylist) => {
+    player.playTrack(track, playlist);
+  };
+
+  const playableTracks =
+    playlist &&
+    playlist.tracks.items
+      .filter(item => {
+        return item.track.preview_url !== null;
+      })
+      .map(item => {
+        return item.track;
+      });
+
   return (
     <>
-      <Profile />
       {isLoading ? (
         <PlaylistContainer>Loading...</PlaylistContainer>
       ) : error ? (
@@ -56,18 +72,45 @@ const Playlist = (props: PlaylistProps) => {
                 <p>{playlist.description}</p>
 
                 <p>{playlist.tracks.total} Songs</p>
+
+                {playableTracks &&
+                  playableTracks.length > 0 &&
+                  (player.isPlaying &&
+                  player.currentAlbum.id === playlist.id ? (
+                    <Button
+                      onClick={() => player.setIsPlaying(false)}
+                      size={SIZE.compact}
+                      shape={SHAPE.pill}
+                    >
+                      Pause
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() =>
+                        player.addToPlayQueue(playableTracks, playlist)
+                      }
+                      size={SIZE.compact}
+                      shape={SHAPE.pill}
+                    >
+                      Play
+                    </Button>
+                  ))}
               </PlaylistInfo>
               <div>
                 <Ul>
-                  {playlist.tracks &&
+                  {playlist &&
                     playlist.tracks.items.map(item => {
                       return (
                         <Track
                           key={item.track.id}
+                          id={item.track.id}
                           name={item.track.name}
                           artists={item.track.artists}
                           preview_url={item.track.preview_url}
                           duration_ms={item.track.duration_ms}
+                          onDoubleClick={() =>
+                            handleDoubleClick(item.track, playlist)
+                          }
                         />
                       );
                     })}
