@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { INewReleases } from "./api";
 import { H6 } from "baseui/typography";
 import { styled } from "baseui";
-import Profile from "./Profile";
 
 export const HomeContainer = styled("div", {
   padding: "0px 74px 40px 74px"
@@ -43,37 +42,34 @@ const NewReleases = () => {
   }, []);
 
   return (
-    <>
-      <Profile />
-      <HomeContainer>
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : error ? (
-          <div>Something went wrong try again!</div>
-        ) : (
-          <>
-            <H6 margin="10px">NEW RELEASES</H6>
-            <UlContainer>
-              {newReleases &&
-                newReleases.items.map(item => {
-                  return (
-                    <Li key={item.id}>
-                      <Link to={`/albums/${item.id}`}>
-                        <img
-                          height="200"
-                          width="200"
-                          src={item.images[0].url}
-                          alt={item.name}
-                        />
-                      </Link>
-                    </Li>
-                  );
-                })}
-            </UlContainer>
-          </>
-        )}
-      </HomeContainer>
-    </>
+    <HomeContainer>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>Something went wrong try again!</div>
+      ) : (
+        <>
+          <H6 margin="10px">NEW RELEASES</H6>
+          <UlContainer>
+            {newReleases &&
+              newReleases.items.map(item => {
+                return (
+                  <Li key={item.id}>
+                    <Link to={`/albums/${item.id}`}>
+                      <img
+                        height="200"
+                        width="200"
+                        src={item.images[0].url}
+                        alt={item.name}
+                      />
+                    </Link>
+                  </Li>
+                );
+              })}
+          </UlContainer>
+        </>
+      )}
+    </HomeContainer>
   );
 };
 

@@ -3,9 +3,7 @@ import Axios from "axios";
 import { Link } from "react-router-dom";
 import { ICategories } from "./api";
 import { H6 } from "baseui/typography";
-import Profile from "./Profile";
 import { HomeContainer, UlContainer, Li } from "./NewReleases";
-import { isError } from "util";
 
 const Categories = () => {
   const [categories, setCategories] = useState<ICategories | null>(null);
@@ -23,43 +21,40 @@ const Categories = () => {
       })
       .catch(error => {
         console.log(error);
-        isError(true);
+        setError(true);
       });
   }, []);
 
   return (
-    <>
-      <Profile />
-      <HomeContainer>
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : error ? (
-          <div>Something went wrong try again!</div>
-        ) : (
-          <>
-            <H6 margin="10px">CATEGORIES</H6>
-            <UlContainer>
-              {categories &&
-                categories.items.map(item => {
-                  return (
-                    <Li key={item.id}>
-                      <H6 margin="10px">{item.name}</H6>
-                      <Link to={`/categories/${item.id}`}>
-                        <img
-                          height="200"
-                          width="200"
-                          src={item.icons[0].url}
-                          alt={item.name}
-                        />
-                      </Link>
-                    </Li>
-                  );
-                })}
-            </UlContainer>
-          </>
-        )}
-      </HomeContainer>
-    </>
+    <HomeContainer>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>Something went wrong try again!</div>
+      ) : (
+        <>
+          <H6 margin="10px">CATEGORIES</H6>
+          <UlContainer>
+            {categories &&
+              categories.items.map(item => {
+                return (
+                  <Li key={item.id}>
+                    <H6 margin="10px">{item.name}</H6>
+                    <Link to={`/categories/${item.id}`}>
+                      <img
+                        height="200"
+                        width="200"
+                        src={item.icons[0].url}
+                        alt={item.name}
+                      />
+                    </Link>
+                  </Li>
+                );
+              })}
+          </UlContainer>
+        </>
+      )}
+    </HomeContainer>
   );
 };
 

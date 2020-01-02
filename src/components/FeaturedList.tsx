@@ -3,7 +3,6 @@ import Axios from "axios";
 import { Link } from "react-router-dom";
 import { IFeaturedList } from "./api";
 import { H6 } from "baseui/typography";
-import Profile from "./Profile";
 import { HomeContainer, UlContainer, Li } from "./NewReleases";
 
 const FeaturedList = () => {
@@ -27,37 +26,34 @@ const FeaturedList = () => {
   }, []);
 
   return (
-    <>
-      <Profile />
-      <HomeContainer>
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : error ? (
-          <div>Something went wrong try again!</div>
-        ) : (
-          <>
-            <H6 margin="10px">Featured List</H6>
-            <UlContainer>
-              {featuredList &&
-                featuredList.items.map(item => {
-                  return (
-                    <Li key={item.id}>
-                      <Link to={`/playlists/${item.id}`}>
-                        <img
-                          height="200"
-                          width="200"
-                          src={item.images[0].url}
-                          alt={item.name}
-                        />
-                      </Link>
-                    </Li>
-                  );
-                })}
-            </UlContainer>
-          </>
-        )}
-      </HomeContainer>
-    </>
+    <HomeContainer>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : error ? (
+        <div>Something went wrong try again!</div>
+      ) : (
+        <>
+          <H6 margin="10px">Featured List</H6>
+          <UlContainer>
+            {featuredList &&
+              featuredList.items.map(item => {
+                return (
+                  <Li key={item.id}>
+                    <Link to={`/playlists/${item.id}`}>
+                      <img
+                        height="200"
+                        width="200"
+                        src={item.images[0].url}
+                        alt={item.name}
+                      />
+                    </Link>
+                  </Li>
+                );
+              })}
+          </UlContainer>
+        </>
+      )}
+    </HomeContainer>
   );
 };
 

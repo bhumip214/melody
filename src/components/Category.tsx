@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { CategoriesItem, CategoryPlaylists } from "./api";
 import Axios from "axios";
 import { styled } from "baseui";
-import Profile from "./Profile";
 
 const CategoryContainer = styled("div", {
   margin: "0px 0px 70px 80px",
@@ -80,7 +79,6 @@ const Category = (props: CategoryProps) => {
 
   return (
     <>
-      <Profile />
       {isCategoryLoading ? (
         <CategoryContainer>Loading...</CategoryContainer>
       ) : categoryError ? (
