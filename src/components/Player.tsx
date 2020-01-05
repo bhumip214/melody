@@ -52,6 +52,25 @@ const Player = (props: PlayerProps) => {
   const player = useContext(PlayerContext);
   const duration = 30000;
 
+  const handlePlayClick = () => {
+    if (player.playQueue.length === 0 && player.playableTracks) {
+      player.addToPlayQueue(player.playableTracks);
+    } else {
+      player.setIsPlaying(true);
+    }
+  };
+
+  const handlePauseClick = () => {
+    player.setIsPlaying(false);
+  };
+
+  const handleSkipForward = () => {
+    player.playNext();
+  };
+
+  const handleSkipBackward = () => {
+    player.playPrevious();
+  };
   return (
     <PlayerContainer>
       <div>
@@ -81,6 +100,7 @@ const Player = (props: PlayerProps) => {
             strokeLinecap="round"
             strokeLinejoin="round"
             className="feather feather-skip-back"
+            onClick={handleSkipBackward}
           >
             <polygon points="19 20 9 12 19 4 19 20"></polygon>
             <line x1="5" y1="19" x2="5" y2="5"></line>
@@ -98,6 +118,7 @@ const Player = (props: PlayerProps) => {
               strokeLinecap="round"
               strokeLinejoin="round"
               className="feather feather-pause-circle"
+              onClick={handlePauseClick}
             >
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="10" y1="15" x2="10" y2="9"></line>
@@ -115,6 +136,7 @@ const Player = (props: PlayerProps) => {
               strokeLinecap="round"
               strokeLinejoin="round"
               className="feather feather-play-circle"
+              onClick={handlePlayClick}
             >
               <circle cx="12" cy="12" r="10"></circle>
               <polygon points="10 8 16 12 10 16 10 8"></polygon>
@@ -131,6 +153,7 @@ const Player = (props: PlayerProps) => {
             strokeLinecap="round"
             strokeLinejoin="round"
             className="feather feather-skip-forward"
+            onClick={handleSkipForward}
           >
             <polygon points="5 4 15 12 5 20 5 4"></polygon>
             <line x1="19" y1="5" x2="19" y2="19"></line>
@@ -145,7 +168,7 @@ const Player = (props: PlayerProps) => {
           </span>
         </PlayerBar>
       </div>
-      <SoundBar>SoundBar</SoundBar>
+      {/* <SoundBar>SoundBar</SoundBar> */}
     </PlayerContainer>
   );
 };

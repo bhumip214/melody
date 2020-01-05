@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import Track from "./Track";
-import { IPlaylist, PlaylistTrack } from "./api";
+import { IPlaylist, PlaylistTrack, Album } from "./api";
 import Axios from "axios";
 import { Button, SIZE, SHAPE } from "baseui/button";
 import {
@@ -37,8 +37,8 @@ const Playlist = (props: PlaylistProps) => {
       });
   }, [props.match.params.playlistId]);
 
-  const handleDoubleClick = (track: PlaylistTrack, playlist: IPlaylist) => {
-    player.playTrack(track, playlist);
+  const handleDoubleClick = (track: PlaylistTrack, album: Album) => {
+    player.playTrack(track, album);
   };
 
   const playableTracks =
@@ -50,6 +50,12 @@ const Playlist = (props: PlaylistProps) => {
       .map(item => {
         return item.track;
       });
+
+  useEffect(() => {
+    if (playableTracks) {
+      player.setPlayableTracks(playableTracks);
+    }
+  }, [playlist]);
 
   return (
     <>
@@ -86,9 +92,7 @@ const Playlist = (props: PlaylistProps) => {
                     </Button>
                   ) : (
                     <Button
-                      onClick={() =>
-                        player.addToPlayQueue(playableTracks, playlist)
-                      }
+                      onClick={() => player.addToPlayQueue(playableTracks)}
                       size={SIZE.compact}
                       shape={SHAPE.pill}
                     >
@@ -109,7 +113,7 @@ const Playlist = (props: PlaylistProps) => {
                           preview_url={item.track.preview_url}
                           duration_ms={item.track.duration_ms}
                           onDoubleClick={() =>
-                            handleDoubleClick(item.track, playlist)
+                            handleDoubleClick(item.track, item.track.album)
                           }
                         />
                       );

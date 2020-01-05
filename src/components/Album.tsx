@@ -64,9 +64,20 @@ const Album = (props: AlbumProps) => {
 
   const playableTracks =
     album &&
-    album.tracks.items.filter(item => {
-      return item.preview_url !== null;
-    });
+    album.tracks.items
+      .filter(item => {
+        return item.preview_url !== null;
+      })
+      .map(track => {
+        const newTrack = { ...track, album: album };
+        return newTrack;
+      });
+
+  useEffect(() => {
+    if (playableTracks) {
+      player.setPlayableTracks(playableTracks);
+    }
+  }, [album]);
 
   return (
     <>
@@ -99,9 +110,7 @@ const Album = (props: AlbumProps) => {
                     </Button>
                   ) : (
                     <Button
-                      onClick={() =>
-                        player.addToPlayQueue(playableTracks, album)
-                      }
+                      onClick={() => player.addToPlayQueue(playableTracks)}
                       size={SIZE.compact}
                       shape={SHAPE.pill}
                     >

@@ -344,3 +344,16 @@ export enum URI {
   SpotifyUserSpotify = "spotify:user:spotify",
   SpotifyUserSpotifycharts = "spotify:user:spotifycharts"
 }
+
+export interface PlayableTrack {
+  album: IAlbum;
+  artists: Owner[];
+  disc_number: number;
+  duration_ms: number;
+  id: string;
+  name: string;
+  popularity: number;
+  preview_url: null | string;
+  track_number: number;
+  uri: string;
+}

@@ -8,9 +8,9 @@ import Player from "./Player";
 import NewReleases from "./NewReleases";
 import Categories from "./Categories";
 import FeaturedList from "./FeaturedList";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { styled } from "baseui";
-import { IAlbum, AlbumItem, PlaylistTrack } from "./api";
+import { IAlbum, AlbumItem, PlayableTrack } from "./api";
 
 const MainContainer = styled("div", {
   display: "flex",
@@ -43,8 +43,12 @@ interface IPlayerContext {
   currentTrack: AlbumItem;
   playTrack: Function;
   currentAlbum: IAlbum;
-  playQueue: AlbumItem[] | PlaylistTrack[];
+  playQueue: PlayableTrack[];
+  playableTracks: PlayableTrack[];
+  setPlayableTracks: Function;
   addToPlayQueue: Function;
+  playNext: Function;
+  playPrevious: Function;
 }
 
 export const PlayerContext = React.createContext<IPlayerContext>(
@@ -55,28 +59,84 @@ const Dashboard = () => {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [currentTrack, setCurrentTrack] = useState<any>(null);
   const [currentAlbum, setcurrentAlbum] = useState<any>(null);
-  const [playQueue, setplayQueue] = useState<AlbumItem[] | PlaylistTrack[]>([]);
+  const [playQueue, setplayQueue] = useState<PlayableTrack[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(-1);
   const [progress, setProgress] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
+  const [playableTracks, setPlayableTracks] = useState<PlayableTrack[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const playTrack = (track: PlayableTrack, album: IAlbum) => {
+    if (currentTrack && currentTrack.id === track.id) {
+      setIsPlaying(!isPlaying);
+      setcurrentAlbum(album);
+    } else {
+      setIsPlaying(true);
+      setCurrentTrack(track);
+      setcurrentAlbum(album);
+    }
+  };
+
+  const addToPlayQueue = (tracks: PlayableTrack[]) => {
+    setplayQueue(tracks);
+    setCurrentIndex(0);
+  };
+
+  const playNext = () => {
+    if (playQueue.length - 1 === currentIndex) {
+      setCurrentIndex(0);
+    } else {
+      setCurrentIndex(currIndex => {
+        return currIndex + 1;
+      });
+    }
+  };
+
+  const playPrevious = () => {
+    if (currentIndex === 0) {
+      setCurrentIndex(playQueue.length - 1);
+    } else {
+      setCurrentIndex(currIndex => {
+        return currIndex - 1;
+      });
+    }
+  };
 
   useEffect(() => {
     if (!audioRef.current) {
       return;
     }
-    audioRef.current.addEventListener("timeupdate", event => {
+    const handleTimeUpdate = () => {
       const { currentTime, duration } = audioRef.current as HTMLAudioElement;
 
       if (currentTime && duration) {
         setProgress((currentTime / duration) * 100);
         setDuration(duration);
       }
-    });
+    };
+    audioRef.current.addEventListener("timeupdate", handleTimeUpdate);
 
-    audioRef.current.addEventListener("ended", event => {
-      setIsPlaying(false);
-    });
-  }, []);
+    const handleTrackEnded = () => {
+      if (playQueue.length !== 0) {
+        if (playQueue.length - 1 === currentIndex) {
+          setCurrentIndex(0);
+        } else {
+          setCurrentIndex(currIndex => {
+            return currIndex + 1;
+          });
+        }
+      } else {
+        setIsPlaying(false);
+      }
+    };
+
+    audioRef.current.addEventListener("ended", handleTrackEnded);
+
+    return () => {
+      audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
+      audioRef.current?.removeEventListener("ended", handleTrackEnded);
+    };
+  }, [playQueue, currentTrack]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -96,24 +156,11 @@ const Dashboard = () => {
     }
   }, [isPlaying, currentTrack]);
 
-  const playTrack = (track: AlbumItem | PlaylistTrack, album: IAlbum) => {
-    if (currentTrack && currentTrack.id === track.id) {
-      setIsPlaying(!isPlaying);
-      setcurrentAlbum(album);
-    } else {
-      setIsPlaying(true);
-      setCurrentTrack(track);
-      setcurrentAlbum(album);
+  useEffect(() => {
+    if (playQueue.length !== 0 && currentIndex !== -1) {
+      playTrack(playQueue[currentIndex], playQueue[currentIndex].album);
     }
-  };
-
-  const addToPlayQueue = (
-    tracks: AlbumItem[] | PlaylistTrack[],
-    album: IAlbum
-  ) => {
-    setplayQueue(tracks);
-    playTrack(tracks[0], album);
-  };
+  }, [currentIndex, playQueue]);
 
   return (
     <PlayerContext.Provider
@@ -124,7 +171,11 @@ const Dashboard = () => {
         playTrack,
         currentAlbum,
         playQueue,
-        addToPlayQueue
+        playableTracks,
+        setPlayableTracks,
+        addToPlayQueue,
+        playNext,
+        playPrevious
       }}
     >
       <MainContainer>
@@ -138,12 +189,11 @@ const Dashboard = () => {
             <Switch>
               <Route path="/playlists/:playlistId" component={Playlist} />
               <Route path="/albums/:albumId" component={Album} />
-
               <Route path="/categories/:categoryId" component={Category} />
-
               <Route path="/new-releases" component={NewReleases} />
               <Route path="/featured-list" component={FeaturedList} />
               <Route path="/categories" component={Categories} />
+              <Redirect to="/new-releases" />
             </Switch>
           </RightContainer>
         </TopContainer>
