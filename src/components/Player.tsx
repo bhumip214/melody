@@ -40,10 +40,6 @@ const PlayerBar = styled("div", {
   alignItems: "center"
 });
 
-const SoundBar = styled("div", {
-  justifySelf: "flex-end"
-});
-
 interface PlayerProps {
   progress: number;
   duration: number;
@@ -168,7 +164,6 @@ const Player = (props: PlayerProps) => {
           </span>
         </PlayerBar>
       </div>
-      {/* <SoundBar>SoundBar</SoundBar> */}
     </PlayerContainer>
   );
 };

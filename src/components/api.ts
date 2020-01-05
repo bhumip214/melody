@@ -43,7 +43,7 @@ export enum ArtistType {
 
 // album
 export interface IAlbum {
-  album_type: string;
+  album_type: AlbumTypeEnum;
   artists: Artist[];
   available_markets: string[];
   copyrights: Copyright[];
@@ -56,11 +56,11 @@ export interface IAlbum {
   label: string;
   name: string;
   popularity: number;
-  release_date: Date;
-  release_date_precision: string;
+  release_date: string;
+  release_date_precision: ReleaseDatePrecision;
   total_tracks: number;
   tracks: AlbumsTracks;
-  type: string;
+  type: AlbumTypeEnum;
   uri: string;
 }
 
@@ -119,7 +119,7 @@ export interface FeaturedListItem {
   id: string;
   images: Image[];
   name: string;
-  owner: Owner;
+  owner: Artist;
   primary_color: null;
   public: null;
   snapshot_id: string;
@@ -138,7 +138,7 @@ export interface IPlaylist {
   id: string;
   images: Image[];
   name: string;
-  owner: Owner;
+  owner: Artist;
   primary_color: null;
   public: boolean;
   snapshot_id: string;
@@ -159,7 +159,7 @@ export interface PlaylistTracks {
 
 export interface PlaylistItem {
   added_at: Date;
-  added_by: Owner;
+  added_by: Artist;
   is_local: boolean;
   primary_color: null;
   track: PlaylistTrack;
@@ -168,7 +168,7 @@ export interface PlaylistItem {
 
 export interface PlaylistTrack {
   album: Album;
-  artists: Owner[];
+  artists: Artist[];
   available_markets: string[];
   disc_number: number;
   duration_ms: number;
@@ -190,7 +190,7 @@ export interface PlaylistTrack {
 
 export interface Album {
   album_type: AlbumTypeEnum;
-  artists: Owner[];
+  artists: Artist[];
   available_markets: string[];
   external_urls: ExternalUrls;
   href: string;
@@ -259,7 +259,7 @@ export interface CategoryPlaylistsItem {
   id: string;
   images: Image[];
   name: string;
-  owner: Owner;
+  owner: Artist;
   primary_color: null;
   public: null;
   snapshot_id: string;
@@ -290,16 +290,6 @@ export interface Image {
   width: null | number;
 }
 
-export interface Owner {
-  display_name?: DisplayName;
-  external_urls: ExternalUrls;
-  href: string;
-  id: string;
-  type: OwnerType;
-  uri: string;
-  name?: string;
-}
-
 export enum DisplayName {
   Spotify = "Spotify",
   Spotifycharts = "spotifycharts"
@@ -311,6 +301,7 @@ export enum OwnerType {
 }
 
 export interface Artist {
+  display_name?: DisplayName;
   external_urls: ExternalUrls;
   href: string;
   id: string;
@@ -346,13 +337,11 @@ export enum URI {
 }
 
 export interface PlayableTrack {
-  album: IAlbum;
-  artists: Owner[];
-  disc_number: number;
+  album: Album;
+  artists: Artist[];
   duration_ms: number;
   id: string;
   name: string;
-  popularity: number;
   preview_url: null | string;
   track_number: number;
   uri: string;

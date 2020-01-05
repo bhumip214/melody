@@ -81,7 +81,7 @@ const Category = (props: CategoryProps) => {
         auth.setTokenStatus("invalid");
         setError(true);
       });
-  }, [props.match.params.categoryId]);
+  }, [props.match.params.categoryId, auth]);
 
   return (
     <>

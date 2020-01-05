@@ -27,7 +27,7 @@ const FeaturedList = () => {
         auth.setTokenStatus("invalid");
         setError(true);
       });
-  }, []);
+  }, [auth]);
 
   return (
     <HomeContainer>

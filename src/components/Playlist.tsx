@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import Track from "./Track";
-import { IPlaylist, PlaylistTrack, Album } from "./api";
+import { IPlaylist, PlayableTrack } from "./api";
 import Axios from "axios";
 import { Button, SIZE, SHAPE } from "baseui/button";
 import {
@@ -39,10 +39,10 @@ const Playlist = (props: PlaylistProps) => {
         auth.setTokenStatus("invalid");
         setError(true);
       });
-  }, [props.match.params.playlistId]);
+  }, [props.match.params.playlistId, auth]);
 
-  const handleDoubleClick = (track: PlaylistTrack, album: Album) => {
-    player.playTrack(track, album);
+  const handleDoubleClick = (track: PlayableTrack) => {
+    player.playTrack(track);
   };
 
   const playableTracks =
@@ -116,9 +116,7 @@ const Playlist = (props: PlaylistProps) => {
                           artists={item.track.artists}
                           preview_url={item.track.preview_url}
                           duration_ms={item.track.duration_ms}
-                          onDoubleClick={() =>
-                            handleDoubleClick(item.track, item.track.album)
-                          }
+                          onDoubleClick={() => handleDoubleClick(item.track)}
                         />
                       );
                     })}

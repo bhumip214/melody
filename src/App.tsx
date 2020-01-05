@@ -66,7 +66,6 @@ const App = () => {
         headers: { Authorization: `Bearer ${token}` }
       })
         .then(res => {
-          console.log(res);
           setUserInfo(res.data);
           setTokenStatus("valid");
         })

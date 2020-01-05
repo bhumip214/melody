@@ -43,7 +43,7 @@ const NewReleases = () => {
         auth.setTokenStatus("invalid");
         setError(true);
       });
-  }, []);
+  }, [auth]);
 
   return (
     <HomeContainer>

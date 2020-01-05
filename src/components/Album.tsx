@@ -53,7 +53,7 @@ const Album = (props: AlbumProps) => {
         auth.setTokenStatus("invalid");
         setError(true);
       });
-  }, [props.match.params.albumId]);
+  }, [props.match.params.albumId, auth]);
 
   let artists;
   if (album) {
@@ -63,7 +63,7 @@ const Album = (props: AlbumProps) => {
   }
 
   const handleDoubleClick = (track: AlbumItem, album: IAlbum) => {
-    player.playTrack(track, album);
+    player.playTrack({ ...track, album });
   };
 
   const playableTracks =

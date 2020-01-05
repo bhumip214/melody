@@ -45,7 +45,7 @@ interface IPlayerContext {
   playableTracks: PlayableTrack[];
   setIsPlaying(isPlaying: boolean): void;
   setPlayableTracks(playableTracks: PlayableTrack[]): void;
-  playTrack(track: PlayableTrack, album: IAlbum): void;
+  playTrack(track: PlayableTrack): void;
   addToPlayQueue(tracks: PlayableTrack[]): void;
   playNext(): void;
   playPrevious(): void;
@@ -66,14 +66,14 @@ const Dashboard = () => {
   const [playableTracks, setPlayableTracks] = useState<PlayableTrack[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const playTrack = (track: PlayableTrack, album: IAlbum) => {
+  const playTrack = (track: PlayableTrack) => {
     if (currentTrack && currentTrack.id === track.id) {
       setIsPlaying(!isPlaying);
-      setcurrentAlbum(album);
+      setcurrentAlbum(track.album);
     } else {
       setIsPlaying(true);
       setCurrentTrack(track);
-      setcurrentAlbum(album);
+      setcurrentAlbum(track.album);
     }
   };
 
@@ -136,7 +136,7 @@ const Dashboard = () => {
       audioRef.current?.removeEventListener("timeupdate", handleTimeUpdate);
       audioRef.current?.removeEventListener("ended", handleTrackEnded);
     };
-  }, [playQueue, currentTrack]);
+  }, [playQueue, currentTrack, currentIndex]);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -158,7 +158,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (playQueue.length !== 0 && currentIndex !== -1) {
-      playTrack(playQueue[currentIndex], playQueue[currentIndex].album);
+      playTrack(playQueue[currentIndex]);
     }
   }, [currentIndex, playQueue]);
 

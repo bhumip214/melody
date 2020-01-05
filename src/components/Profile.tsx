@@ -1,6 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
-import Axios from "axios";
-import { UserInfo } from "./api";
+import React, { useContext } from "react";
 import { styled } from "baseui";
 import { AuthContext } from "../App";
 
