@@ -10,9 +10,10 @@ import {
 } from "./Album";
 import { PlayerContext } from "./Dashboard";
 import { AuthContext } from "../App";
+import { match } from "react-router-dom";
 
 interface PlaylistProps {
-  match: any;
+  match: match<{ playlistId: string }>;
 }
 const Playlist = (props: PlaylistProps) => {
   const [playlist, setPlaylist] = useState<IPlaylist | null>(null);

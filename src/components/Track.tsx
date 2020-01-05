@@ -10,7 +10,7 @@ interface TrackProps {
   preview_url: string | null;
   artists: Array<{ name?: string }>;
   duration_ms: number;
-  onDoubleClick: Function;
+  onDoubleClick(): void;
 }
 
 const Track = (props: TrackProps) => {

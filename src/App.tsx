@@ -41,9 +41,11 @@ const getToken = () => {
 };
 
 interface IauthContext {
-  setTokenStatus: Function;
+  setTokenStatus(status: TokenStatus): void;
   userInfo: UserInfo;
 }
+
+type TokenStatus = "validating" | "no-token" | "invalid" | "valid";
 
 export const AuthContext = React.createContext<IauthContext>(
   {} as IauthContext
@@ -52,9 +54,9 @@ export const AuthContext = React.createContext<IauthContext>(
 const App = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const token = getToken();
-  const [tokenStatus, setTokenStatus] = useState<
-    "validating" | "no-token" | "invalid" | "valid"
-  >(token ? "validating" : "no-token");
+  const [tokenStatus, setTokenStatus] = useState<TokenStatus>(
+    token ? "validating" : "no-token"
+  );
 
   useEffect(() => {
     if (token) {

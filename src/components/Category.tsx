@@ -4,6 +4,7 @@ import { CategoriesItem, CategoryPlaylists } from "./api";
 import Axios from "axios";
 import { styled } from "baseui";
 import { AuthContext } from "../App";
+import { match } from "react-router-dom";
 
 const CategoryContainer = styled("div", {
   margin: "0px 0px 70px 80px",
@@ -35,7 +36,7 @@ const Name = styled("p", {
 });
 
 interface CategoryProps {
-  match: any;
+  match: match<{ categoryId: string }>;
 }
 const Category = (props: CategoryProps) => {
   const [category, setCategory] = useState<CategoriesItem | null>(null);

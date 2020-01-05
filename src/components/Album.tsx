@@ -7,6 +7,7 @@ import { Button, SIZE, SHAPE } from "baseui/button";
 import { PlayerContext } from "./Dashboard";
 import { formatter } from "../helpers/utilis";
 import { AuthContext } from "../App";
+import { match } from "react-router-dom";
 
 export const AlbumContainer = styled("div", {
   display: "flex",
@@ -25,7 +26,7 @@ export const Ul = styled("ul", {
 });
 
 interface AlbumProps {
-  match: any;
+  match: match<{ albumId: string }>;
 }
 
 const Album = (props: AlbumProps) => {

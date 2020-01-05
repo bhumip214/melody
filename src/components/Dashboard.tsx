@@ -39,16 +39,16 @@ const RightContainer = styled("div", {
 
 interface IPlayerContext {
   isPlaying: boolean;
-  setIsPlaying: Function;
   currentTrack: AlbumItem;
-  playTrack: Function;
   currentAlbum: IAlbum;
   playQueue: PlayableTrack[];
   playableTracks: PlayableTrack[];
-  setPlayableTracks: Function;
-  addToPlayQueue: Function;
-  playNext: Function;
-  playPrevious: Function;
+  setIsPlaying(isPlaying: boolean): void;
+  setPlayableTracks(playableTracks: PlayableTrack[]): void;
+  playTrack(track: PlayableTrack, album: IAlbum): void;
+  addToPlayQueue(tracks: PlayableTrack[]): void;
+  playNext(): void;
+  playPrevious(): void;
 }
 
 export const PlayerContext = React.createContext<IPlayerContext>(
@@ -61,8 +61,8 @@ const Dashboard = () => {
   const [currentAlbum, setcurrentAlbum] = useState<any>(null);
   const [playQueue, setplayQueue] = useState<PlayableTrack[]>([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
-  const [progress, setProgress] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
+  const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [playableTracks, setPlayableTracks] = useState<PlayableTrack[]>([]);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -166,13 +166,13 @@ const Dashboard = () => {
     <PlayerContext.Provider
       value={{
         isPlaying,
-        setIsPlaying,
         currentTrack,
-        playTrack,
         currentAlbum,
         playQueue,
         playableTracks,
+        setIsPlaying,
         setPlayableTracks,
+        playTrack,
         addToPlayQueue,
         playNext,
         playPrevious
