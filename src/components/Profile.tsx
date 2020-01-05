@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import { UserInfo } from "./api";
 import { styled } from "baseui";
+import { AuthContext } from "../App";
 
 const ProfileContainer = styled("div", {
   display: "flex",
@@ -23,41 +24,16 @@ const IMG = styled("img", {
 });
 
 const Profile = () => {
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-    Axios.get("https://api.spotify.com/v1/me", {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-    })
-      .then(res => {
-        setIsLoading(false);
-        setUserInfo(res.data);
-      })
-      .catch(error => {
-        console.log(error);
-        setError(true);
-      });
-  }, []);
+  const auth = useContext(AuthContext);
 
   return (
     <div style={{ display: "flex", justifyContent: "flex-end" }}>
-      <ProfileContainer>
-        {isLoading ? (
-          <div>Loading...</div>
-        ) : error ? (
-          <div>Something went wrong try again!</div>
-        ) : (
-          userInfo && (
-            <>
-              <p>{userInfo.display_name}</p>
-              <IMG src={userInfo.images[0].url} alt="Profile" />
-            </>
-          )
-        )}
-      </ProfileContainer>
+      {auth.userInfo && (
+        <ProfileContainer>
+          <p>{auth.userInfo.display_name}</p>
+          <IMG src={auth.userInfo.images[0].url} alt="Profile" />
+        </ProfileContainer>
+      )}
     </div>
   );
 };

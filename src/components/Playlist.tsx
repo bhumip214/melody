@@ -9,6 +9,7 @@ import {
   Ul
 } from "./Album";
 import { PlayerContext } from "./Dashboard";
+import { AuthContext } from "../App";
 
 interface PlaylistProps {
   match: any;
@@ -18,6 +19,7 @@ const Playlist = (props: PlaylistProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
+  const auth = useContext(AuthContext);
   const player = useContext(PlayerContext);
 
   useEffect(() => {
@@ -33,6 +35,7 @@ const Playlist = (props: PlaylistProps) => {
       })
       .catch(error => {
         console.log(error);
+        auth.setTokenStatus("invalid");
         setError(true);
       });
   }, [props.match.params.playlistId]);

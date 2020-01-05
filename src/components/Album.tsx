@@ -6,6 +6,7 @@ import { styled } from "baseui";
 import { Button, SIZE, SHAPE } from "baseui/button";
 import { PlayerContext } from "./Dashboard";
 import { formatter } from "../helpers/utilis";
+import { AuthContext } from "../App";
 
 export const AlbumContainer = styled("div", {
   display: "flex",
@@ -32,6 +33,7 @@ const Album = (props: AlbumProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
+  const auth = useContext(AuthContext);
   const player = useContext(PlayerContext);
 
   useEffect(() => {
@@ -47,6 +49,7 @@ const Album = (props: AlbumProps) => {
       })
       .catch(error => {
         console.log(error);
+        auth.setTokenStatus("invalid");
         setError(true);
       });
   }, [props.match.params.albumId]);

@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Axios from "axios";
 import { Link } from "react-router-dom";
 import { IFeaturedList } from "./api";
 import { H6 } from "baseui/typography";
 import { HomeContainer, UlContainer, Li } from "./NewReleases";
+import { AuthContext } from "../App";
 
 const FeaturedList = () => {
   const [featuredList, setFeaturedList] = useState<IFeaturedList | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+
+  const auth = useContext(AuthContext);
 
   useEffect(() => {
     setIsLoading(true);
@@ -21,6 +24,7 @@ const FeaturedList = () => {
       })
       .catch(error => {
         console.log(error);
+        auth.setTokenStatus("invalid");
         setError(true);
       });
   }, []);

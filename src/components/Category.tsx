@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { CategoriesItem, CategoryPlaylists } from "./api";
 import Axios from "axios";
 import { styled } from "baseui";
+import { AuthContext } from "../App";
 
 const CategoryContainer = styled("div", {
   margin: "0px 0px 70px 80px",
@@ -47,6 +48,8 @@ const Category = (props: CategoryProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
+  const auth = useContext(AuthContext);
+
   useEffect(() => {
     const id = props.match.params.categoryId;
 
@@ -60,6 +63,7 @@ const Category = (props: CategoryProps) => {
       })
       .catch(error => {
         console.log(error);
+        auth.setTokenStatus("invalid");
         setCategoryError(true);
       });
 
@@ -73,6 +77,7 @@ const Category = (props: CategoryProps) => {
       })
       .catch(error => {
         console.log(error);
+        auth.setTokenStatus("invalid");
         setError(true);
       });
   }, [props.match.params.categoryId]);

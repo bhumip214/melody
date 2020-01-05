@@ -187,8 +187,8 @@ const Dashboard = () => {
           <RightContainer>
             <Profile />
             <Switch>
-              <Route path="/playlists/:playlistId" component={Playlist} />
               <Route path="/albums/:albumId" component={Album} />
+              <Route path="/playlists/:playlistId" component={Playlist} />
               <Route path="/categories/:categoryId" component={Category} />
               <Route path="/new-releases" component={NewReleases} />
               <Route path="/featured-list" component={FeaturedList} />
