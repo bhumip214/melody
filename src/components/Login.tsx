@@ -14,7 +14,10 @@ const Centered = styled("div", {
 export const authEndpoint = "https://accounts.spotify.com/authorize";
 
 const clientId = process.env.REACT_APP_CLIENT_ID;
-const redirectUri = "http://localhost:3000/";
+const redirectUri =
+  window.location.host === "localhost:3000"
+    ? "http://localhost:3000/"
+    : window.location.origin;
 const scopes = ["user-read-currently-playing", "user-read-playback-state"];
 
 const Login = () => {
